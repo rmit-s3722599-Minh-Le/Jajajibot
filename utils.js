@@ -42,6 +42,19 @@ export function getRandomEmoji() {
   return emojiList[Math.floor(Math.random() * emojiList.length)];
 }
 
+export function getRamdomGreetings() {
+  const greetings = [
+    ['https://media.discordapp.net/attachments/1144095932414169169/1394586320403435540/4-ScoldingCat-ezgif.com-crop.gif?ex=69d213b8&is=69d0c238&hm=c86f8c1dcbf8e31656e8a978456c3a52a46d6c9a7d5ef74f8572acffa1b189b3&=', 'JaaawwJawwJi'],
+    ['https://media.tenor.com/7RYccVz-o8IAAAAC/tenor.gif', 'agangggggggg']
+  ]
+  return greetings[Math.floor(Math.random() * greetings.length)]
+
+}
+
 export function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+export function pingUser (usr) {
+  return `<@${usr}>`
 }

@@ -8,7 +8,7 @@ import {
   MessageComponentTypes,
   verifyKeyMiddleware,
 } from 'discord-interactions';
-import { getRandomEmoji, DiscordRequest } from './utils.js';
+import { getRandomEmoji, DiscordRequest, pingUser, getRamdomGreetings } from './utils.js';
 import { getShuffledOptions, getResult } from './game.js';
 
 // Create an express app
@@ -41,7 +41,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     const { name } = data;
 
     // "test" command
-    if (name === 'test') {
+    if (name === 'jajaji') {
       // Send a message into the channel where command was triggered from
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -51,7 +51,52 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
             {
               type: MessageComponentTypes.TEXT_DISPLAY,
               // Fetches a random emoji to send from a helper function
-              content: `hello world ${getRandomEmoji()}`
+              content: `Jajajihai`
+            }
+          ]
+        },
+      });
+    }
+
+    if (name === 'jajajihai') {
+      // Send a message into the channel where command was triggered from
+      const greeting = getRamdomGreetings()
+      console.log('fetching', greeting)
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          content: greeting[1],
+          embeds: [
+            {
+              image: {
+                url: greeting[0]
+              }
+            }
+          ]
+        },
+      });
+    }
+
+    if (name === 'reminder') {
+
+      const ObjTime = req.body.data.options[0].value;
+      const ObjUser = req.body.data.options[1]?.value;
+      const ObjIsRepeat = req.body.data.options[2]?.value;
+
+      const context = req.body.context;
+    // User ID is in user field for (G)DMs, and member for servers
+      const userId = ObjUser || context === 0 ? req.body.member.user.id : req.body.user.id;
+
+      // Send a message into the channel where command was triggered from
+      return res.send({
+        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+        data: {
+          flags: InteractionResponseFlags.IS_COMPONENTS_V2,
+          components: [
+            {
+              type: MessageComponentTypes.TEXT_DISPLAY,
+              // Fetches a random emoji to send from a helper function
+              content: `User: ${pingUser(userId)} Time:${ObjTime} Repeat:${ObjIsRepeat}`
             }
           ]
         },
@@ -69,3 +114,7 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
 app.listen(PORT, () => {
   console.log('Listening on port', PORT);
 });
+
+//https://www.youtube.com/watch?v=xXQnTb5e1CM
+//https://docs.discord.com/developers/interactions/application-commands#slash-command-interaction
+//https://docs.discord.com/developers/platform/interactions
