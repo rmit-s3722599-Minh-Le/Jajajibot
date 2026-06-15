@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { getRPSChoices } from './game.js';
 import { capitalize, InstallGlobalCommands } from './utils.js';
+import pool from './db.js';
 
 // Get the game choices from game.js
 function createCommandChoices() {
@@ -26,6 +27,12 @@ const REMINDER_COMMAND = {
   {
     name: 'time',
     description: 'jajaji Time',
+    type: 3,
+    required: true
+  },
+  {
+    name: 'message',
+    description: 'jajaji message',
     type: 3,
     required: true
   },
@@ -63,6 +70,31 @@ const RANDOM_HI_COMMAND = {
   contexts: [0, 1, 2],
 };
 
+const TIMEZONE_COMMAND = {
+  name: 'timezone',
+  description: 'Set your timezone for reminders',
+  options: [
+    {
+      name: 'timezone',
+      description: 'Select your timezone',
+      type: 3,
+      required: true,
+      choices: [
+        { name: 'Melbourne (AEDT/AEST)', value: 'Australia/Melbourne' },
+        { name: 'Las Vegas (PT)', value: 'America/Los_Angeles' },
+        { name: 'New York (ET)', value: 'America/New_York' },
+        { name: 'London (GMT/BST)', value: 'Europe/London' },
+        { name: 'Tokyo (JST)', value: 'Asia/Tokyo' },
+        { name: 'Singapore (SGT)', value: 'Asia/Singapore' },
+        { name: 'Dubai (GST)', value: 'Asia/Dubai' },
+        { name: 'Paris (CET/CEST)', value: 'Europe/Paris' },
+      ]
+    }
+  ],
+  integration_types: [0, 1],
+  contexts: [0, 1, 2],
+};
+
 
 // Command containing options
 const CHALLENGE_COMMAND = {
@@ -82,6 +114,6 @@ const CHALLENGE_COMMAND = {
   contexts: [0, 2],
 };
 
-const ALL_COMMANDS = [TEST_COMMAND, REMINDER_COMMAND, CHALLENGE_COMMAND, RANDOM_HI_COMMAND];
+const ALL_COMMANDS = [TEST_COMMAND, REMINDER_COMMAND, CHALLENGE_COMMAND, RANDOM_HI_COMMAND, TIMEZONE_COMMAND];
 
 InstallGlobalCommands(process.env.APP_ID, ALL_COMMANDS);
