@@ -108,11 +108,12 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
           data: { content: `Invalid time! Use HH:MM format like 13:23\n\nNo timezone set? Use \`/timezone\` first (e.g. \`Australia/Melbourne\`)` }
         });
       }
-
+      
+      const ONE_DAY = 24 * 60 * 60 * 1000;
       await pool.query(
         `INSERT INTO reminders (user_id, channel_id, message, remind_at, is_repeat, repeat_delay)
         VALUES ($1, $2, $3, $4, $5, $6)`,
-        [userId, channelId, msg, remindAt, objIsRepeat, objIsRepeat ? delay : null]
+        [userId, channelId, msg, remindAt, objIsRepeat, objIsRepeat ? ONE_DAY : null]
       );
 
       return res.send({
