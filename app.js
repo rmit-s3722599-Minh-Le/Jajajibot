@@ -82,10 +82,14 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
     }
 
     if (name === 'reminder') {
-      const objTime = req.body.data.options[0].value;
-      const msg = req.body.data.options[1].value;
-      const objUser = req.body.data.options[2]?.value;
-      const objIsRepeat = req.body.data.options[3]?.value ?? false;
+
+      const options = req.body.data.options;
+      const getOption = (name) => options.find(opt => opt.name === name)?.value;
+      
+      const objTime = getOption('time');
+      const msg = getOption('message');
+      const objUser = getOption('user');
+      const objIsRepeat = getOption('repeat') ?? false;
 
       const context = req.body.context;
       const channelId = req.body.channel_id;
@@ -130,9 +134,12 @@ app.post('/interactions', verifyKeyMiddleware(process.env.PUBLIC_KEY), async fun
       });
     }
     if (name === 'timezone') {
-      const tz = req.body.data.options[0].value; 
+      const options = req.body.data.options;
+      const getOption = (name) => options.find(opt => opt.name === name)?.value;
+
+      const tz = getOption('timezone');
       const context = req.body.context;
-      const userId = req.body.data.options[2]?.value || (context === 0 ? req.body.member.user.id : req.body.user.id);
+      const userId = context === 0 ? req.body.member.user.id : req.body.user.id;
       
       await pool.query(
         `INSERT INTO user_timezones (user_id, timezone) VALUES ($1, $2)
